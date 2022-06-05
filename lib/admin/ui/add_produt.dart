@@ -1,77 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mystore/admin/bloc/products_bloc.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
-import 'package:mystore/admin/ui/muti.dart';
 
 
-class AddProducts extends StatelessWidget {
- 
-  const AddProducts({Key? key}) : super(key: key);
+
+
+
+class ProductForm extends StatefulWidget {
+  final ProductsModel prodmodel;
+  final state = _ProductFormState();
+
+
+  ProductForm({required Key key, required this.prodmodel}) : super(key: key);
+  @override
+  _ProductFormState createState() => state;
+
+  bool isValid() => state.validate();
+}
+
+class _ProductFormState extends State<ProductForm> {
+  final form = GlobalKey<FormState>();
+    ///on add form
 
   @override
   Widget build(BuildContext context) {
-    
-    
-    TextEditingController con_Id = TextEditingController();
-    TextEditingController con_title = TextEditingController();
-    TextEditingController con_color = TextEditingController();
-    return Scaffold(
-      appBar: AppBar(title: Text(" Add product")),
-      body: BlocListener<ProductsBloc, ProductsState>(
-        listener: (context, state) {
-          if (state is ProductsLoadedState) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('To Do Added!')));
-          }
-        },
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(children: [
-              _inpuField("Id", con_Id),
-              _inpuField("title", con_title),
-              _inpuField("color", con_color),
-              Expanded(child: MyWidget()),
-              ElevatedButton(
-                onPressed: () {
-                  var product = ProductsModel(
-                      Id: con_Id.value.text,
-                      title: con_title.value.text,
-                      //description:[{des}],
-                      color: con_color.value.text);
-                  context
-                      .read<ProductsBloc>()
-                      .add(ProductAdd(product: product));
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).primaryColor,
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Material(
+        elevation: 1,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(8),
+        child: Form(
+          key: form,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              AppBar(
+                leading: Icon(Icons.verified_user),
+                elevation: 0,
+                title: Text('User Details'),
+                backgroundColor: Theme.of(context).accentColor,
+                centerTitle: true,
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.save),
+                    onPressed: (){},
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: TextFormField(
+                  initialValue: widget.prodmodel.title,
+                  onSaved: (val) => widget.prodmodel.title = val!,
+                  validator: (val) =>
+                      val!.length > 3 ? null : 'Full name is invalid',
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    hintText: 'Enter your full name',
+                    icon: Icon(Icons.person),
+                    isDense: true,
+                  ),
                 ),
-                child: const Text("Add Product"),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16, right: 16, bottom: 24),
+                child: TextFormField(
+                  initialValue: widget.prodmodel.color,
+                  onSaved: (val) => widget.prodmodel.color = val!,
+                  validator: (val) =>
+                      val!.length > 3 ? null : 'Full name is invalid',
+                  decoration: InputDecoration(
+                    labelText: 'Email Address',
+                    hintText: 'Enter your email',
+                    icon: Icon(Icons.email),
+                    isDense: true,
+                  ),
+                ),
               )
-            ]),
+            ],
           ),
         ),
       ),
     );
   }
-}
 
-Column _inpuField(String field, TextEditingController controller) {
-  return Column(
-    children: [
-      Text(
-        '$field',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      Container(
-        height: 50,
-        margin: EdgeInsets.only(bottom: 10),
-        width: double.infinity,
-        child: TextFormField(
-          controller: controller,
-        ),
-      )
-    ],
-  );
+  ///form validator
+  bool validate() {
+    var valid = form.currentState!.validate();
+    if (valid) form.currentState!.save();
+    return valid;
+  }
 }

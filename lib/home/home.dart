@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mystore/admin/ui/admin_home.dart';
 import 'package:mystore/catalog/bloc/catalog_bloc.dart';
 import 'package:mystore/home/constants.dart';
 
@@ -44,7 +45,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                     context,
                        MaterialPageRoute(
-                        builder: (context) => const AddProducts())
+                        builder: (context) => AdminHome())
                     );
               },
             ),

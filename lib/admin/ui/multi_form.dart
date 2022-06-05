@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
+import 'package:mystore/admin/ui/add_produt.dart';
 import 'package:mystore/admin/ui/form.dart';
 
 class MultiForm extends StatefulWidget {
@@ -9,7 +10,8 @@ class MultiForm extends StatefulWidget {
 
 class _MultiFormState extends State<MultiForm> {
   List<UserForm> users = [];//ui for description
-  ProductsModel prodmodel=ProductsModel();
+ //late String title;
+  late ProductsModel prodmodel;
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +43,14 @@ class _MultiFormState extends State<MultiForm> {
         ),
          child: users.length <= 0
             ? Center(
-                child: Text('Add form by tapping add button below'),
+                child: ProductForm(key: GlobalKey(),prodmodel: prodmodel,),
               )
             : ListView.builder(
                 addAutomaticKeepAlives: true,
                 itemCount: users.length,
                 itemBuilder: (_, i) => users[i],
-              ), 
-              
+              ),  
+         
       ),
      floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -69,6 +71,7 @@ class _MultiFormState extends State<MultiForm> {
   ///on add form
   void onAddForm() {
     setState(() {
+      
       var _user=Description();
       users.add(UserForm(
         description: _user,
@@ -80,6 +83,9 @@ class _MultiFormState extends State<MultiForm> {
 
   ///on save forms
   void onSave() {
+    print('------------------');
+    //prodmodel.title=GlobalKey().currentContext.fi
+    print(prodmodel.title.toString());
     if (users.length > 0) {
       var allValid = true;
       users.forEach((form) => allValid = allValid && form.isValid());
