@@ -1,116 +1,92 @@
-// To parse this JSON data, do
-//
-//     final catlogModel = catlogModelFromJson(jsonString);
-
-import 'dart:convert';
-
-
-ProductsModel catlogModelFromJson(String str) =>
-    ProductsModel.fromJson(json.decode(str));
-
-String catlogModelToJson(ProductsModel data) => json.encode(data.toJson());
-/* List<CatlogModel> catalogModelFromJson(String str) => List<CatlogModel>.from(
-    json.decode(str).map((x) => CatlogModel.fromJson(x)));
-
-String catalogModelToJson(List<CatlogModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))); */
-
 class ProductsModel {
-  String? Id;
-  Brand? brand;
-  Shipping? shipping;
-  ReviewPoint? reviewPoint;
   String? title;
   String? experDate;
-  List<Images>? images;
+  List<String>? images;
   String? color;
-  Description? description;
+  Brand? brand;
+  Shipping? shipping;
+  List<Description>? description;
+  ReviewPoint? reviewPoint;
   String? certification;
   String? returnPolicy;
   String? sublabel;
-  PricetypeId? pricetypeId;
-  MaincategoryId? maincategoryId;
+  String? pricetype;
+  List<Pricepackage>? pricepackage;
+  String? maincategoryId;
 
   ProductsModel(
-      {this.Id,
-      this.brand,
-      this.shipping,
-      this.reviewPoint,
-      this.title,
+      {this.title,
       this.experDate,
       this.images,
       this.color,
+      this.brand,
+      this.shipping,
       this.description,
+      this.reviewPoint,
       this.certification,
       this.returnPolicy,
       this.sublabel,
-      this.pricetypeId,
+      this.pricetype,
+      this.pricepackage,
       this.maincategoryId});
 
   ProductsModel.fromJson(Map<String, dynamic> json) {
-    Id = json['Id'];
+    title = json['title'];
+    experDate = json['experDate'];
+    images = json['images'].cast<String>();
+    color = json['color'];
     brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
     shipping = json['shipping'] != null
         ? new Shipping.fromJson(json['shipping'])
         : null;
+    if (json['description'] != null) {
+      description = <Description>[];
+      json['description'].forEach((v) {
+        description!.add(new Description.fromJson(v));
+      });
+    }
     reviewPoint = json['reviewPoint'] != null
         ? new ReviewPoint.fromJson(json['reviewPoint'])
         : null;
-    title = json['title'];
-    experDate = json['experDate'];
-    if (json['images'] != null) {
-      images = <Images>[];
-      json['images'].forEach((v) {
-        images!.add(new Images.fromJson(v));
-      });
-    }
-    color = json['color'];
-    
-    description = json['description'] != null
-        ? new Description.fromJson(json['description'])
-        : null; 
-    
     certification = json['certification'];
     returnPolicy = json['returnPolicy'];
     sublabel = json['sublabel'];
-    pricetypeId = json['pricetype_id'] != null
-        ? new PricetypeId.fromJson(json['pricetype_id'])
-        : null;
-    maincategoryId = json['maincategory_id'] != null
-        ? new MaincategoryId.fromJson(json['maincategory_id'])
-        : null;
+    pricetype = json['pricetype'];
+    if (json['pricepackage'] != null) {
+      pricepackage = <Pricepackage>[];
+      json['pricepackage'].forEach((v) {
+        pricepackage!.add(new Pricepackage.fromJson(v));
+      });
+    }
+    maincategoryId = json['maincategory_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['experDate'] = this.experDate;
+    data['images'] = this.images;
+    data['color'] = this.color;
     if (this.brand != null) {
       data['brand'] = this.brand!.toJson();
     }
     if (this.shipping != null) {
       data['shipping'] = this.shipping!.toJson();
     }
+    if (this.description != null) {
+      data['description'] = this.description!.map((v) => v.toJson()).toList();
+    }
     if (this.reviewPoint != null) {
       data['reviewPoint'] = this.reviewPoint!.toJson();
-    }
-    data['title'] = this.title;
-    data['Id'] = this.Id;
-    data['experDate'] = this.experDate;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v.toJson()).toList();
-    }
-    data['color'] = this.color;
-    if (this.description != null) {
-      data['description'] = this.description!.toJson();
     }
     data['certification'] = this.certification;
     data['returnPolicy'] = this.returnPolicy;
     data['sublabel'] = this.sublabel;
-    if (this.pricetypeId != null) {
-      data['pricetype_id'] = this.pricetypeId!.toJson();
+    data['pricetype'] = this.pricetype;
+    if (this.pricepackage != null) {
+      data['pricepackage'] = this.pricepackage!.map((v) => v.toJson()).toList();
     }
-    if (this.maincategoryId != null) {
-      data['maincategory_id'] = this.maincategoryId!.toJson();
-    }
+    data['maincategory_id'] = this.maincategoryId;
     return data;
   }
 }
@@ -135,24 +111,24 @@ class Brand {
 }
 
 class Shipping {
-  Dimensions? dimensions;
   int? weigh;
+  Dimensions? dimensions;
 
-  Shipping({this.dimensions, this.weigh});
+  Shipping({this.weigh, this.dimensions});
 
   Shipping.fromJson(Map<String, dynamic> json) {
+    weigh = json['weigh'];
     dimensions = json['dimensions'] != null
         ? new Dimensions.fromJson(json['dimensions'])
         : null;
-    weigh = json['weigh'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['weigh'] = this.weigh;
     if (this.dimensions != null) {
       data['dimensions'] = this.dimensions!.toJson();
     }
-    data['weigh'] = this.weigh;
     return data;
   }
 }
@@ -179,6 +155,25 @@ class Dimensions {
   }
 }
 
+class Description {
+  String? lang;
+  String? details;
+
+  Description({this.lang, this.details});
+
+  Description.fromJson(Map<String, dynamic> json) {
+    lang = json['lang'];
+    details = json['details'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['lang'] = this.lang;
+    data['details'] = this.details;
+    return data;
+  }
+}
+
 class ReviewPoint {
   String? username;
   int? count;
@@ -198,121 +193,24 @@ class ReviewPoint {
   }
 }
 
-class Images {
-  Img? img;
-
-  Images({this.img});
-
-  Images.fromJson(Map<String, dynamic> json) {
-    img = json['img'] != null ? new Img.fromJson(json['img']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.img != null) {
-      data['img'] = this.img!.toJson();
-    }
-    return data;
-  }
-}
-
-class Img {
-  int? height;
-  String? src;
-  int? width;
-
-  Img({this.height, this.src, this.width});
-
-  Img.fromJson(Map<String, dynamic> json) {
-    height = json['height'];
-    src = json['src'];
-    width = json['width'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['height'] = this.height;
-    data['src'] = this.src;
-    data['width'] = this.width;
-    return data;
-  }
-}
-
-class Description {
-  
-  String? lang;
-  String? details;
-
-  Description({ this.lang, this.details});
-
-  Description.fromJson(Map<String, dynamic> json) {
-    lang = json['lang'];
-    details = json['details'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lang'] = this.lang;
-    data['details'] = this.details;
-    return data;
-  }
-}
-
-class PricetypeId {
-  String? pricetype;
-  List<Packagetype>? packagetype;
-  List<Inventorylist>? inventorylist;
-
-  PricetypeId({this.pricetype, this.packagetype, this.inventorylist});
-
-  PricetypeId.fromJson(Map<String, dynamic> json) {
-    pricetype = json['pricetype'];
-    if (json['packagetype'] != null) {
-      packagetype = <Packagetype>[];
-      json['packagetype'].forEach((v) {
-        packagetype!.add(new Packagetype.fromJson(v));
-      });
-    }
-    if (json['inventorylist'] != null) {
-      inventorylist = <Inventorylist>[];
-      json['inventorylist'].forEach((v) {
-        inventorylist!.add(new Inventorylist.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['pricetype'] = this.pricetype;
-    if (this.packagetype != null) {
-      data['packagetype'] = this.packagetype!.map((v) => v.toJson()).toList();
-    }
-    if (this.inventorylist != null) {
-      data['inventorylist'] =
-          this.inventorylist!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Packagetype {
-  Pricing? pricing;
+class Pricepackage {
   String? packagename;
+  Pricing? pricing;
 
-  Packagetype({this.pricing, this.packagename});
+  Pricepackage({this.packagename, this.pricing});
 
-  Packagetype.fromJson(Map<String, dynamic> json) {
+  Pricepackage.fromJson(Map<String, dynamic> json) {
+    packagename = json['packagename'];
     pricing =
         json['pricing'] != null ? new Pricing.fromJson(json['pricing']) : null;
-    packagename = json['packagename'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['packagename'] = this.packagename;
     if (this.pricing != null) {
       data['pricing'] = this.pricing!.toJson();
     }
-    data['packagename'] = this.packagename;
     return data;
   }
 }
@@ -321,52 +219,22 @@ class Pricing {
   int? list;
   int? sellprice;
   int? buyprice;
+  int? quantity;
+  int? sellquantity;
+  String? indate;
 
-  Pricing({this.list, this.sellprice, this.buyprice});
+  Pricing(
+      {this.list,
+      this.sellprice,
+      this.buyprice,
+      this.quantity,
+      this.sellquantity,
+      this.indate});
 
   Pricing.fromJson(Map<String, dynamic> json) {
     list = json['list'];
     sellprice = json['sellprice'];
     buyprice = json['buyprice'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['list'] = this.list;
-    data['sellprice'] = this.sellprice;
-    data['buyprice'] = this.buyprice;
-    return data;
-  }
-}
-
-class Inventorylist {
-  Inventory? inventory;
-
-  Inventorylist({this.inventory});
-
-  Inventorylist.fromJson(Map<String, dynamic> json) {
-    inventory = json['inventory'] != null
-        ? new Inventory.fromJson(json['inventory'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.inventory != null) {
-      data['inventory'] = this.inventory!.toJson();
-    }
-    return data;
-  }
-}
-
-class Inventory {
-  int? quantity;
-  int? sellquantity;
-  String? indate;
-
-  Inventory({this.quantity, this.sellquantity, this.indate});
-
-  Inventory.fromJson(Map<String, dynamic> json) {
     quantity = json['Quantity'];
     sellquantity = json['sellquantity'];
     indate = json['indate'];
@@ -374,77 +242,12 @@ class Inventory {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['list'] = this.list;
+    data['sellprice'] = this.sellprice;
+    data['buyprice'] = this.buyprice;
     data['Quantity'] = this.quantity;
     data['sellquantity'] = this.sellquantity;
     data['indate'] = this.indate;
-    return data;
-  }
-}
-
-class MaincategoryId {
-  String? maincategory;
-  List<Subcategory>? subcategory;
-
-  MaincategoryId({this.maincategory, this.subcategory});
-
-  MaincategoryId.fromJson(Map<String, dynamic> json) {
-    maincategory = json['maincategory'];
-    if (json['subcategory'] != null) {
-      subcategory = <Subcategory>[];
-      json['subcategory'].forEach((v) {
-        subcategory!.add(new Subcategory.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['maincategory'] = this.maincategory;
-    if (this.subcategory != null) {
-      data['subcategory'] = this.subcategory!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Subcategory {
-  String? subcatname;
-  List<Sublabel>? sublabel;
-
-  Subcategory({this.subcatname, this.sublabel});
-
-  Subcategory.fromJson(Map<String, dynamic> json) {
-    subcatname = json['subcatname'];
-    if (json['sublabel'] != null) {
-      sublabel = <Sublabel>[];
-      json['sublabel'].forEach((v) {
-        sublabel!.add(new Sublabel.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['subcatname'] = this.subcatname;
-    if (this.sublabel != null) {
-      data['sublabel'] = this.sublabel!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Sublabel {
-  String? sublabelname;
-
-  Sublabel({this.sublabelname});
-
-  Sublabel.fromJson(Map<String, dynamic> json) {
-    sublabelname = json['sublabelname'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sublabelname'] = this.sublabelname;
     return data;
   }
 }

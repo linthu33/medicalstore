@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
 
-import '../models/listdesctiprionModel.dart';
 
 
 
-typedef OnDelete();
 
-class UserForm extends StatefulWidget {
-  final ListDescription description;
-  final state = _UserFormState();
-  final OnDelete onDelete;
+class PriceForm extends StatefulWidget {
+  final ProductsModel prodmodel;
+  final state = _PriceFormState();
 
-  UserForm({required Key key, required this.description, required this.onDelete}) : super(key: key);
+
+  PriceForm({required Key key, required this.prodmodel}) : super(key: key);
   @override
-  _UserFormState createState() => state;
+  _PriceFormState createState() => state;
 
   bool isValid() => state.validate();
 }
 
-class _UserFormState extends State<UserForm> {
-  final form = GlobalKey<FormState>();
-
+class _PriceFormState extends State<PriceForm> {
+  final formone = GlobalKey<FormState>();
+  TextEditingController titleEditingController = TextEditingController();
+    ///on add form
+  void onAddFormmodel() {
+    setState(() {
+      //ProductsModel(title:titleEditingController.text );
+      widget.prodmodel.title=titleEditingController.text.toString();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -31,7 +36,7 @@ class _UserFormState extends State<UserForm> {
         clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(8),
         child: Form(
-          key: form,
+          key: formone,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -43,16 +48,18 @@ class _UserFormState extends State<UserForm> {
                 centerTitle: true,
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: widget.onDelete,
+                    icon: Icon(Icons.save),
+                    onPressed: (){
+                      onAddFormmodel();
+                    },
                   )
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: TextFormField(
-                  initialValue: widget.description.lang,
-                  onSaved: (val) => widget.description.lang = val!,
+                  //initialValue: widget.prodmodel.title,
+                 controller: titleEditingController,
                   validator: (val) =>
                       val!.length > 3 ? null : 'Full name is invalid',
                   decoration: const InputDecoration(
@@ -63,21 +70,7 @@ class _UserFormState extends State<UserForm> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, bottom: 24),
-                child: TextFormField(
-                  initialValue: widget.description.details,
-                  onSaved: (val) => widget.description.details = val!,
-                  validator: (val) =>
-                      val!.length > 3 ? null : 'Full name is invalid',
-                  decoration: InputDecoration(
-                    labelText: 'Email Address',
-                    hintText: 'Enter your email',
-                    icon: Icon(Icons.email),
-                    isDense: true,
-                  ),
-                ),
-              )
+        
             ],
           ),
         ),
@@ -87,8 +80,8 @@ class _UserFormState extends State<UserForm> {
 
   ///form validator
   bool validate() {
-    var valid = form.currentState!.validate();
-    if (valid) form.currentState!.save();
+    var valid = formone.currentState!.validate();
+    if (valid) formone.currentState!.save();
     return valid;
   }
 }
