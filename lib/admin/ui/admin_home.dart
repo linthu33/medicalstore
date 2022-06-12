@@ -4,7 +4,7 @@ import 'package:mystore/admin/bloc/products_bloc.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
 import 'package:mystore/admin/ui/add_produt.dart';
 import 'package:mystore/admin/ui/dynamictext.dart';
-import 'package:mystore/admin/ui/multi_form.dart';
+import 'package:mystore/admin/ui/productmulti_form.dart';
 
 
 
@@ -22,7 +22,7 @@ class AdminHome extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MultiForm()));
+                          builder: (context) => ProductMultiForm()));
                 },
                 icon: const Icon(Icons.add))
           ],

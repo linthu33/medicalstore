@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
-
-import '../models/listdesctiprionModel.dart';
-
-
+import 'package:mystore/admin/ui/productmulti_form.dart';
 
 typedef OnDelete();
+typedef OnAddForm();
 
-class UserForm extends StatefulWidget {
-  final ListDescription description;
-  final state = _UserFormState();
+class DescriptionForm extends StatefulWidget {
+  final Description description;
+  final state = _DescriptionFormState();
   final OnDelete onDelete;
+  final OnAddForm onAddForm;
 
-  UserForm({required Key key, required this.description, required this.onDelete}) : super(key: key);
+  DescriptionForm(
+      {required Key key,
+      required this.description,
+      required this.onDelete,
+      required this.onAddForm})
+      : super(key: key);
   @override
-  _UserFormState createState() => state;
+  _DescriptionFormState createState() => state;
 
-  bool isValid() => state.validate();
+  //bool isValid() => state.validate();
 }
 
-class _UserFormState extends State<UserForm> {
+class _DescriptionFormState extends State<DescriptionForm> {
   final form = GlobalKey<FormState>();
 
   @override
@@ -36,7 +40,11 @@ class _UserFormState extends State<UserForm> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               AppBar(
-                leading: Icon(Icons.verified_user),
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.of(context)
+                  .push( MaterialPageRoute(builder: (_) => new  ProductMultiForm()))
+                ),
                 elevation: 0,
                 title: Text('User Details'),
                 backgroundColor: Theme.of(context).accentColor,
@@ -45,7 +53,11 @@ class _UserFormState extends State<UserForm> {
                   IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: widget.onDelete,
-                  )
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: widget.onAddForm,
+                  ),
                 ],
               ),
               Padding(
