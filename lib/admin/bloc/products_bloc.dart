@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -21,18 +23,24 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   }
 
   void _onAddProduct(ProductAdd event, Emitter<ProductsState> emit) {
+    //(event.product.pricepackage);
+    //final evenetada=event.product.pricepackage!.toList();
+    //var tagsJson = jsonDecode(event.product.toJson());
+     print('---------------');
+    print(event.product.toJson());
+     print('---------------');
     final state = this.state;
-    final addproduct = productRepository.AddProducts(event.product);
-    if (addproduct == 200) {
+    //final addproduct = productRepository.AddProducts(event.product);
+   // if (addproduct == 200) {
       if (state is ProductsLoadedState) {
         print(state.products);
         emit(ProductsLoadedState(
             products: List.from(state.products)..add(event.product)));
       }
-    }
-    else{
-      print('no sucessfully');
-    }
+   // }
+    //else{
+   //   print('no sucessfully');
+   // }
   }
 
   void _onUpdateProduct(ProductUpdate event, Emitter<ProductsState> emit) {}

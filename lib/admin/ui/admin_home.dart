@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mystore/admin/bloc/products_bloc.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
-import 'package:mystore/admin/ui/add_produt.dart';
 import 'package:mystore/admin/ui/dynamictext.dart';
 import 'package:mystore/admin/ui/productmulti_form.dart';
+import 'package:mystore/admin/ui/wizard.dart';
 
 
 
@@ -22,7 +22,7 @@ class AdminHome extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ProductMultiForm()));
+                          builder: (context) => const WizardForm()));
                 },
                 icon: const Icon(Icons.add))
           ],
