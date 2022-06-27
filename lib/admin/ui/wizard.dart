@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,9 +9,7 @@ import 'package:mystore/admin/models/ProductsModel.dart';
 
 class WizardFormBloc extends FormBloc<String, String> {
   final title = TextFieldBloc();
-
-  /*  final color = TextFieldBloc(name: 'color');
-  // ignore: non_constant_identifier_names
+  final color = TextFieldBloc(name: 'color');
   final brand_name = TextFieldBloc(name: 'brand_name');
   //final brand_img = TextFieldBloc(name: 'brand_img');
   final shipping_weigh = TextFieldBloc(name: 'shipping_weigh');
@@ -21,7 +18,7 @@ class WizardFormBloc extends FormBloc<String, String> {
   final reviewPoint_user = TextFieldBloc(name: 'reviewPoint_user');
   final reviewPoint_count = TextFieldBloc(name: 'reviewPoint_count');
   final certification = TextFieldBloc(name: 'certification');
-  final returnPolicy = TextFieldBloc(name: 'returnPolicy'); */
+  final returnPolicy = TextFieldBloc(name: 'returnPolicy');
   final descriptions =
       ListFieldBloc<DescriptionFieldBloc, dynamic>(name: 'descriptions');
   final pricetype =
@@ -32,7 +29,7 @@ class WizardFormBloc extends FormBloc<String, String> {
 
   final subcategorylist =
       ListFieldBloc<MemberFieldBloc, dynamic>(name: 'subcategorylist');
-
+  final uploadimgserer = BooleanFieldBloc();
   WizardFormBloc() {
     addFieldBlocs(
       step: 0,
@@ -42,10 +39,14 @@ class WizardFormBloc extends FormBloc<String, String> {
       ],
     );
     addFieldBlocs(
+      step: 2,
+      fieldBlocs: [imgpath],
+    );
+    addFieldBlocs(
       step: 1,
       fieldBlocs: [
         title,
-        /* color,
+        color,
         brand_name,
         shipping_weigh,
         shipping_dim_width,
@@ -53,7 +54,7 @@ class WizardFormBloc extends FormBloc<String, String> {
         reviewPoint_user,
         reviewPoint_count,
         certification,
-        returnPolicy, */
+        returnPolicy,
         descriptions, //list
         pricetype, //list
       ],
@@ -107,22 +108,21 @@ class WizardFormBloc extends FormBloc<String, String> {
   }
 
   bool _showEmailTakenError = true;
-
+  //final prodbloc=
   @override
   void onSubmitting() async {
     if (state.currentStep == 0) {
       await Future.delayed(const Duration(milliseconds: 500));
-      emitSuccess();
-    } else  {
-      await Future.delayed(const Duration(milliseconds: 100));
 
-       emitSuccess(
-      canSubmitAgain: true,
-      successResponse: const JsonEncoder.withIndent('    ').convert(
-        state.toJson(),
-      ),
-    );
-   // print(state.toJson());
+      emitSuccess();
+    } else if (state.currentStep == 1) {
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      emitSuccess();
+    } else if (state.currentStep == 2) {
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      emitSuccess();
     }
   }
 }
@@ -137,9 +137,7 @@ class WizardForm extends StatefulWidget {
 class _WizardFormState extends State<WizardForm> {
   //late final XFile? _image;
   File? reimg;
-  String sererimg =
-      "http://192.168.25.29:3000/uploads//1655782980144_image_picker3442593116161686490.jpg";
-  String? resimg;
+
   final ImagePicker _picker = ImagePicker();
   Future getImagefromcamera() async {
     var image = await _picker.pickImage(source: ImageSource.camera);
@@ -224,25 +222,40 @@ class _WizardFormState extends State<WizardForm> {
                     LoadingDialog.hide(context);
 
                     if (state.stepCompleted == state.lastStep) {
-                   /*  Pricepackage pp=jsonEncode(state.valueListOf('pricetype')) as Pricepackage;
-                    print('widget data'+); */
-                    List<Pricepackage> plist=state.valueListOf('pricetype')!.
-                    map((formdata) => Pricepackage.fromJson(formdata))
-                    .toList();
-                       var prod=ProductsModel(
-                            pricepackage:state.valueListOf('pricetype')!.map<Pricepackage>((memberField) {
-        return Pricepackage(
-          packagename:memberField['packagename'],
-          
-          pricing: Pricing(sellprice:memberField['pricing']['sellprice'])
-        );
-        
-      }).toList(),
-                           
-    
-                       );
-                          
-                       context.read<ProductsBloc>()..add(ProductAdd(product: prod));
+                      /* List<Pricepackage> plist = state
+                          .valueListOf('pricetype')!
+                          .map((formdata) => Pricepackage.fromJson(formdata))
+                          .toList(); */
+                      var prod = ProductsModel(
+                        title: state.valueOf('title'),
+                        color: state.valueOf('color'),
+                        brand: Brand(name: state.valueOf('brand_name')),
+                        shipping: Shipping(
+                            weigh: state.valueOf('shipping_weigh'),
+                            dimensions: Dimensions(
+                                width: state.valueOf('shipping_dim_width'))),
+                        reviewPoint: state.valueOf('reviewPoint'),
+                        description: state
+                            .valueListOf('descriptions')!
+                            .map<Description>((dec) {
+                          return Description(
+                              lang: dec['lang'], details: dec['details']);
+                        }).toList(),
+                        pricepackage: state
+                            .valueListOf('pricetype')!
+                            .map<Pricepackage>((memberField) {
+                          return Pricepackage(
+                            packagename: memberField['packagename'],
+
+                            /*  pricing:memberField['pricing'].forEach((entry){
+            print(entry['sellprice']);
+          }) */
+                          );
+                        }).toList(),
+                      );
+
+                      context.read<ProductsBloc>()
+                        ..add(ProductAdd(product: prod));
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (_) => const SuccessScreen()));
                     }
@@ -257,8 +270,8 @@ class _WizardFormState extends State<WizardForm> {
                     stepsBuilder: (formBloc) {
                       return [
                         _categoryStep(formBloc!),
-                        //_imguploadStep(formBloc),
                         _productStep(formBloc),
+                        _imguploadStep(formBloc),
                       ];
                     },
                   ),
@@ -267,49 +280,6 @@ class _WizardFormState extends State<WizardForm> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  FormBlocStep _imguploadStep(WizardFormBloc wizardFormBloc) {
-    return FormBlocStep(
-      title: const Text('Image upload'),
-      content: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 200.0,
-              child: Center(
-                child: reimg == null ? Text("no img") :
-                Image.file(reimg!),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              FloatingActionButton(
-                onPressed: getImagefromcamera,
-                tooltip: "Pick Image form gallery",
-                child: Icon(Icons.add_a_photo),
-              ),
-              FloatingActionButton(
-                onPressed: getImagefromGallery,
-                tooltip: "Pick Image from camera",
-                child: Icon(Icons.camera_alt),
-              ),
-              FloatingActionButton(
-                onPressed: () async {
-                  await uploadImage(reimg!.path);
-                },
-                tooltip: "upload server",
-                child: Icon(Icons.upload),
-              )
-            ],
-          )
-        ],
       ),
     );
   }
@@ -358,6 +328,56 @@ class _WizardFormState extends State<WizardForm> {
         ));
   }
 
+  FormBlocStep _imguploadStep(WizardFormBloc wizardFormBloc) {
+    return FormBlocStep(
+      title: const Text('Image upload'),
+      content: Column(
+        children: <Widget>[
+          TextFieldBlocBuilder(
+            textFieldBloc: wizardFormBloc.imgpath,
+            decoration: const InputDecoration(
+              labelText: 'title',
+              prefixIcon: Icon(Icons.sentiment_satisfied),
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 200.0,
+                child: Center(
+                    child: reimg == null ? Text("no img") : Image.file(reimg!)),
+              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: getImagefromcamera,
+                tooltip: "Pick Image form gallery",
+                child: Icon(Icons.add_a_photo),
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: getImagefromGallery,
+                tooltip: "Pick Image from camera",
+                child: Icon(Icons.camera_alt),
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: () async {
+                  await uploadImage(reimg!.path);
+                },
+                tooltip: "upload server",
+                child: Icon(Icons.upload),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   FormBlocStep _productStep(WizardFormBloc wizardFormBloc) {
     return FormBlocStep(
       title: const Text("Product"),
@@ -369,52 +389,47 @@ class _WizardFormState extends State<WizardForm> {
             prefixIcon: Icon(Icons.sentiment_satisfied),
           ),
         ),
-        /*   TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.title,
-          decoration: const InputDecoration(
-              labelText: 'experDate', prefixIcon: Icon(Icons.title)),
-        ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.color,
+          textFieldBloc: wizardFormBloc.color,
           decoration: const InputDecoration(
               labelText: 'Color', prefixIcon: Icon(Icons.title)),
         ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.brand_name,
+          textFieldBloc: wizardFormBloc.brand_name,
           decoration: const InputDecoration(
               labelText: 'Brand Name',
               prefixIcon: Icon(Icons.branding_watermark)),
         ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.shipping_weigh,
+          textFieldBloc: wizardFormBloc.shipping_weigh,
           decoration: const InputDecoration(
               labelText: 'Shipping Weight',
               prefixIcon: Icon(Icons.local_shipping)),
         ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.shipping_dim_width,
+          textFieldBloc: wizardFormBloc.shipping_dim_width,
           decoration: const InputDecoration(
               labelText: 'Ship Dimension Width',
               prefixIcon: Icon(Icons.local_shipping)),
         ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.shipping_dim_height,
+          textFieldBloc: wizardFormBloc.shipping_dim_height,
           decoration: const InputDecoration(
               labelText: 'Ship Dimension Hight',
               prefixIcon: Icon(Icons.local_shipping)),
         ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.certification,
+          textFieldBloc: wizardFormBloc.certification,
           decoration: const InputDecoration(
               labelText: 'certification',
               prefixIcon: Icon(Icons.circle_notifications_rounded)),
         ),
         TextFieldBlocBuilder(
-          textFieldBloc: productformBloc.returnPolicy,
+          textFieldBloc: wizardFormBloc.returnPolicy,
           decoration: const InputDecoration(
               labelText: 'returnPolicy',
               prefixIcon: Icon(Icons.back_hand_sharp)),
-        ), */
+        ),
         BlocBuilder<ListFieldBloc<DescriptionFieldBloc, dynamic>,
                 ListFieldBlocState<DescriptionFieldBloc, dynamic>>(
             bloc: wizardFormBloc.descriptions,
