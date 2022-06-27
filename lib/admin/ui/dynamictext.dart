@@ -71,7 +71,7 @@ class _MyAddProductState extends State<MyAddProduct> {
               child: FormHelper.submitButton(
                 "save",
                 () {
-                 
+
                 },
                 btnColor: Theme.of(context).primaryColor,
                 borderColor: Theme.of(context).primaryColor,
