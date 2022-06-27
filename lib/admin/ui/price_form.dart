@@ -31,7 +31,7 @@ class _PriceFormState extends State<PriceForm> {
   void onAddFormmodel() {
     setState(() {
       //ProductsModel(title:titleEditingController.text );
-      widget.pricepackage.pricing=Pricing(buyprice:int.parse(buyprice_con.text));
+      //widget.pricepackage.pricing=Pricing(buyprice:int.parse(buyprice_con.text));
     });
   }
 
@@ -52,8 +52,7 @@ class _PriceFormState extends State<PriceForm> {
                 leading: IconButton(
                     icon: Icon(Icons.arrow_back),
                     onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => ProductMultiForm()))),
+                        MaterialPageRoute(builder: (_) => ProductMultiForm()))),
                 elevation: 0,
                 title: Text('Add Price'),
                 backgroundColor: Theme.of(context).accentColor,
@@ -67,10 +66,10 @@ class _PriceFormState extends State<PriceForm> {
                   )
                 ],
               ),
-               Padding(
+              Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: TextFormField(
-                 // initialValue: widget.pricepackage.pricing!.buyprice.toString(),
+                  // initialValue: widget.pricepackage.pricing!.buyprice.toString(),
                   //onSaved: (val) => widget.pricepackage.pricing!.buyprice = val! as int?,
                   controller: buyprice_con,
                   validator: (val) =>
@@ -82,7 +81,7 @@ class _PriceFormState extends State<PriceForm> {
                     isDense: true,
                   ),
                 ),
-              ), 
+              ),
             ],
           ),
         ),

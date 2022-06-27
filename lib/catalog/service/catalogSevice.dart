@@ -15,7 +15,7 @@ class CatalogService extends ServiceApi {
   @override
   Future<List<CatlogModel>> getCatalog() async {
     try {
-      var uri = Uri.parse("http://localhost:3000/findAllprod");
+      var uri = Uri.parse("http://192.168.25.29:3000/findAllprod");
       var response =
           await http.get(uri, headers: {"ContentType": "application/json"});
 
@@ -36,7 +36,7 @@ class CatalogService extends ServiceApi {
   @override
   Future<CatlogModel> getOneCatlog() async {
     try {
-      var uri = Uri.parse("http://localhost:3000/findOneprod");
+      var uri = Uri.parse("http://192.168.25.29:3000/findOneprod");
       var response =
           await http.get(uri, headers: {"ContentType": "application/json"});
 

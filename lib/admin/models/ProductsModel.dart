@@ -1,4 +1,6 @@
 class ProductsModel {
+  String? maincategory;
+  List<Subcategory>? subcategory;
   String? title;
   String? experDate;
   List<String>? images;
@@ -15,7 +17,9 @@ class ProductsModel {
   String? maincategoryId;
 
   ProductsModel(
-      {this.title,
+      {this.maincategory,
+      this.subcategory,
+      this.title,
       this.experDate,
       this.images,
       this.color,
@@ -31,6 +35,13 @@ class ProductsModel {
       this.maincategoryId});
 
   ProductsModel.fromJson(Map<String, dynamic> json) {
+    maincategory = json['maincategory'];
+    if (json['subcategory'] != null) {
+      subcategory = <Subcategory>[];
+      json['subcategory'].forEach((v) {
+        subcategory!.add(new Subcategory.fromJson(v));
+      });
+    }
     title = json['title'];
     experDate = json['experDate'];
     images = json['images'].cast<String>();
@@ -63,6 +74,10 @@ class ProductsModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['maincategory'] = this.maincategory;
+    if (this.subcategory != null) {
+      data['subcategory'] = this.subcategory!.map((v) => v.toJson()).toList();
+    }
     data['title'] = this.title;
     data['experDate'] = this.experDate;
     data['images'] = this.images;
@@ -87,6 +102,22 @@ class ProductsModel {
       data['pricepackage'] = this.pricepackage!.map((v) => v.toJson()).toList();
     }
     data['maincategory_id'] = this.maincategoryId;
+    return data;
+  }
+}
+
+class Subcategory {
+  String? subcatname;
+
+  Subcategory({this.subcatname});
+
+  Subcategory.fromJson(Map<String, dynamic> json) {
+    subcatname = json['subcatname'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['subcatname'] = this.subcatname;
     return data;
   }
 }
@@ -195,22 +226,41 @@ class ReviewPoint {
 
 class Pricepackage {
   String? packagename;
-  Pricing? pricing;
+  int? list;
+  int? sellprice;
+  int? buyprice;
+  int? quantity;
+  int? sellquantity;
+  String? indate;
 
-  Pricepackage({this.packagename, this.pricing});
+  Pricepackage(
+      {this.packagename,
+      this.list,
+      this.sellprice,
+      this.buyprice,
+      this.quantity,
+      this.sellquantity,
+      this.indate});
 
   Pricepackage.fromJson(Map<String, dynamic> json) {
     packagename = json['packagename'];
-    pricing =
-        json['pricing'] != null ? new Pricing.fromJson(json['pricing']) : null;
+    list = json['list'];
+    sellprice = json['sellprice'];
+    buyprice = json['buyprice'];
+    quantity = json['Quantity'];
+    sellquantity = json['sellquantity'];
+    indate = json['indate'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['packagename'] = this.packagename;
-    if (this.pricing != null) {
-      data['pricing'] = this.pricing!.toJson();
-    }
+    data['list'] = this.list;
+    data['sellprice'] = this.sellprice;
+    data['buyprice'] = this.buyprice;
+    data['Quantity'] = this.quantity;
+    data['sellquantity'] = this.sellquantity;
+    data['indate'] = this.indate;
     return data;
   }
 }

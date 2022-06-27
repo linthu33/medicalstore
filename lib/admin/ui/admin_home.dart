@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mystore/admin/bloc/products_bloc.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
-import 'package:mystore/admin/ui/add_produt.dart';
-import 'package:mystore/admin/ui/dynamictext.dart';
-import 'package:mystore/admin/ui/productmulti_form.dart';
-
-
+import 'package:mystore/admin/ui/wizard.dart';
 
 class AdminHome extends StatelessWidget {
   const AdminHome({Key? key}) : super(key: key);
@@ -22,7 +18,7 @@ class AdminHome extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ProductMultiForm()));
+                          builder: (context) => const WizardForm()));
                 },
                 icon: const Icon(Icons.add))
           ],
@@ -35,7 +31,7 @@ class AdminHome extends StatelessWidget {
           if (state is ProductsLoadedState) {
             List<ProductsModel> products = state.products;
             return ListView.builder(
-              shrinkWrap: true,
+                shrinkWrap: true,
                 itemCount: products.length,
                 itemBuilder: (BuildContext context, int index) {
                   return _ProductList(products[index]);

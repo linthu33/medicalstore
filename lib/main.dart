@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mystore/admin/bloc/products_bloc.dart';
 import 'package:mystore/admin/services/productrepository.dart';
-import 'package:mystore/admin/ui/ImagePicker.dart';
 import 'package:mystore/admin/ui/admin_home.dart';
 import 'package:mystore/cart/bloc/cart_bloc.dart';
 import 'package:mystore/cart/service/shopping_repository.dart';
@@ -13,7 +12,6 @@ import 'package:mystore/catalog/service/catalogrepository.dart';
 import 'package:mystore/catalog/ui/catalog_page.dart';
 import 'package:mystore/category/bloc/category_bloc.dart';
 import 'package:mystore/category/service/CategoryRepository.dart';
-import 'package:mystore/home/home.dart';
 
 import 'home/constants.dart';
 
@@ -47,8 +45,8 @@ class MyApp extends StatelessWidget {
                         ..add(CartStarted())),
               BlocProvider(
                   create: (_) =>
-                      ProductsBloc(productRepository:ProductRepository())
-                        ..add(Productloaded()))
+                      ProductsBloc(productRepository: ProductRepository())
+                        ..add(const Productloaded()))
             ],
             child: MaterialApp(
               title: 'shopping cart',

@@ -21,17 +21,20 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   }
 
   void _onAddProduct(ProductAdd event, Emitter<ProductsState> emit) {
+    print('-------------------');
+    print(event.product.toJson());
+    print('-------------------');
     final state = this.state;
     final addproduct = productRepository.AddProducts(event.product);
+    // ignore: unrelated_type_equality_checks
     if (addproduct == 200) {
       if (state is ProductsLoadedState) {
         print(state.products);
         emit(ProductsLoadedState(
             products: List.from(state.products)..add(event.product)));
       }
-    }
-    else{
-      print('no sucessfully');
+    } else {
+      emit(ProductErrorState("errors"));
     }
   }
 

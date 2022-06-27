@@ -11,7 +11,7 @@ class ProductService extends ProductServiceApi {
   @override
   Future<List<ProductsModel>> getProduct() async {
     try {
-      var uri = Uri.parse("http://localhost:3000/findAllprod");
+      var uri = Uri.parse("http://192.168.25.29:3000/findAllprod");
       var response =
           await http.get(uri, headers: {"ContentType": "application/json"});
 
@@ -26,11 +26,11 @@ class ProductService extends ProductServiceApi {
     }
   }
 
-  
   @override
   Future<int> createProduct(ProductsModel product) async {
     try {
-      var uri = Uri.parse("http://localhost:3000/createprod");
+      print(product);
+      var uri = Uri.parse("http://192.168.25.29:3000/createprod");
       //Map data = {'title': product.title, 'color': product.color};
       final response = await http.post(
         uri,
@@ -39,9 +39,8 @@ class ProductService extends ProductServiceApi {
         },
         body: jsonEncode(product),
       );
-     
-        return response.statusCode ;
-    
+      print(response.statusCode.toString());
+      return response.statusCode;
     } catch (err) {
       return 0;
     }

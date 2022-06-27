@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
 import 'package:mystore/admin/ui/ImagePicker.dart';
-import 'package:mystore/admin/ui/add_produt.dart';
 import 'package:mystore/admin/ui/admin_home.dart';
 import 'package:mystore/admin/ui/description_form.dart';
 import 'package:mystore/admin/ui/price_form.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/listdesctiprionModel.dart';
 
 class ProductMultiForm extends StatefulWidget {
- 
   @override
   _ProductMultiFormState createState() => _ProductMultiFormState();
 }
@@ -19,34 +14,30 @@ class _ProductMultiFormState extends State<ProductMultiForm> {
   List<DescriptionForm> descriptionForm = []; //ui for description
   List<Description> description = [];
   List<PriceForm> pricelist = [];
-   final formalldata = GlobalKey<FormState>();
+  final formalldata = GlobalKey<FormState>();
   // Obtain shared preferences
   //late Brand brand;
-   String _titledata='';
-  final titleController=TextEditingController();
+  String _titledata = '';
+  final titleController = TextEditingController();
   late TextEditingController titlecon;
   ProductsModel prodmodel = ProductsModel();
   //late final String title;
-   // = TextEditingController();
-  
+  // = TextEditingController();
+
   final BrandNameController = TextEditingController();
   final BrandimgController = TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
     //print(prodmodel.title.toString());
-   //titleController.addListener(_handleChange);
-   print("page initia state");
-   print("this is /t ${_titledata}");
- 
-
+    //titleController.addListener(_handleChange);
+    print("page initia state");
+    print("this is /t ${_titledata}");
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         elevation: .0,
@@ -65,91 +56,78 @@ class _ProductMultiFormState extends State<ProductMultiForm> {
       ),
       body: Row(children: [
         Form(
-               key: formalldata,
-               child: Column(
-                   children: [
-                     MyImagePicker(title: "upload image"),
-                     Padding(
-                       padding:
-                           const EdgeInsets.only(left: 16, right: 16, top: 16),
-                       child: TextFormField(
-                          initialValue:_titledata,
-                          //onSaved: (val) => widget.prodmodel.title = val!,
-                        
-                         onChanged: (value){
-                           setState(() {
-                             //titleController.text=value.toString();
-                             _titledata=value.toString();
-                             //print("ppp set on");
-                             print(prodmodel.title);
-                           });
-                         },
-                         decoration: const InputDecoration(
-                           labelText: 'title',
-                           hintText: 'Enter your title',
-                           icon: Icon(Icons.person),
-                           isDense: true,
-                         ),
-                       ),
-                     ),
-                     Padding(
-                       padding:
-                           const EdgeInsets.only(left: 16, right: 16, top: 16),
-                       child: TextFormField(
-                         //initialValue: widget.prodmodel.title,
-                         controller: BrandNameController,
-                         validator: (val) =>
-                             val!.length > 3 ? null : 'Brand name is invalid',
-                         decoration: const InputDecoration(
-                           labelText: 'Brand Name',
-                           hintText: 'Enter your Brand name',
-                           icon: Icon(Icons.bar_chart),
-                           isDense: true,
-                         ),
-                       ),
-                     ),
-                     Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         children: [
-                           Text("Please add your description"),
-                           IconButton(
-                               onPressed: () {
-                                 onAddForm();
-                               },
-                               icon: Icon(Icons.add))
-                         ]),
-                     Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         children: [
-                           const Text("Please add your product price",
-                               style: TextStyle(
-                                   color: Colors.redAccent, fontSize: 14)),
-                           IconButton(
-                             onPressed: () {
-                               onAddPriceForm();
-                             }
-                                ,
-                             icon: Icon(Icons.add),
-                             color: Colors.greenAccent,
-                           ),
-             
-                         ]),
-                     
-                
-                 Row(
-                   children: [
-                     ListView.builder(
-                       addAutomaticKeepAlives: true,
-                       itemCount: pricelist.length,
-                       itemBuilder: (_, i) => pricelist[i],
-                     ),
-                   ],
-                 ),
-                   ],
-                 ),
-             
-             
-             ),
+          key: formalldata,
+          child: Column(
+            children: [
+              MyImagePicker(title: "upload image"),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: TextFormField(
+                  initialValue: _titledata,
+                  //onSaved: (val) => widget.prodmodel.title = val!,
+
+                  onChanged: (value) {
+                    setState(() {
+                      //titleController.text=value.toString();
+                      _titledata = value.toString();
+                      //print("ppp set on");
+                      print(prodmodel.title);
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'title',
+                    hintText: 'Enter your title',
+                    icon: Icon(Icons.person),
+                    isDense: true,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: TextFormField(
+                  //initialValue: widget.prodmodel.title,
+                  controller: BrandNameController,
+                  validator: (val) =>
+                      val!.length > 3 ? null : 'Brand name is invalid',
+                  decoration: const InputDecoration(
+                    labelText: 'Brand Name',
+                    hintText: 'Enter your Brand name',
+                    icon: Icon(Icons.bar_chart),
+                    isDense: true,
+                  ),
+                ),
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text("Please add your description"),
+                IconButton(
+                    onPressed: () {
+                      onAddForm();
+                    },
+                    icon: Icon(Icons.add))
+              ]),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                const Text("Please add your product price",
+                    style: TextStyle(color: Colors.redAccent, fontSize: 14)),
+                IconButton(
+                  onPressed: () {
+                    onAddPriceForm();
+                  },
+                  icon: Icon(Icons.add),
+                  color: Colors.greenAccent,
+                ),
+              ]),
+              Row(
+                children: [
+                  ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    itemCount: pricelist.length,
+                    itemBuilder: (_, i) => pricelist[i],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ]),
     );
   }
@@ -187,12 +165,11 @@ class _ProductMultiFormState extends State<ProductMultiForm> {
     setState(() {
       print("addpriceform");
       print(prodmodel.title);
-     
 
-      _titledata=prodmodel.title.toString();
-       print("After addpriceform");
-     
-     print(prodmodel.title);
+      _titledata = prodmodel.title.toString();
+      print("After addpriceform");
+
+      print(prodmodel.title);
       var _pricepackage = Pricepackage();
       pricelist.add(PriceForm(
         key: GlobalKey(),
@@ -224,7 +201,7 @@ class _ProductMultiFormState extends State<ProductMultiForm> {
         var data = descriptionForm.map((it) => it.description).toList();
         var pricedata = pricelist.map((it) => it.pricepackage).toList();
         //prodmodel.description = data.cast<Description>();
-        prodmodel.pricepackage=pricedata;
+        prodmodel.pricepackage = pricedata;
         print(prodmodel.toJson());
         Navigator.push(
           context,
