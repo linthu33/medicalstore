@@ -30,6 +30,7 @@ class AdminHome extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is ProductsLoadedState) {
+            BlocProvider.of<ProductsBloc>(context).add(const Productloaded());
             List<ProductsModel> products = state.products;
             return ListView.builder(
                 shrinkWrap: true,

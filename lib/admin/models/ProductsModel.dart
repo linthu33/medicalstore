@@ -12,8 +12,7 @@ class ProductsModel {
   String? certification;
   String? returnPolicy;
   String? sublabel;
-  String? pricetype;
-  List<Pricepackage>? pricepackage;
+  List<Pricepackage>? pricetype;
   String? maincategoryId;
 
   ProductsModel(
@@ -30,8 +29,8 @@ class ProductsModel {
       this.certification,
       this.returnPolicy,
       this.sublabel,
+      // this.pricetype,
       this.pricetype,
-      this.pricepackage,
       this.maincategoryId});
 
   ProductsModel.fromJson(Map<String, dynamic> json) {
@@ -62,11 +61,11 @@ class ProductsModel {
     certification = json['certification'];
     returnPolicy = json['returnPolicy'];
     sublabel = json['sublabel'];
-    pricetype = json['pricetype'];
-    if (json['pricepackage'] != null) {
-      pricepackage = <Pricepackage>[];
-      json['pricepackage'].forEach((v) {
-        pricepackage!.add(new Pricepackage.fromJson(v));
+
+    if (json['pricetype'] != null) {
+      pricetype = <Pricepackage>[];
+      json['pricetype'].forEach((v) {
+        pricetype!.add(new Pricepackage.fromJson(v));
       });
     }
     maincategoryId = json['maincategory_id'];
@@ -97,9 +96,8 @@ class ProductsModel {
     data['certification'] = this.certification;
     data['returnPolicy'] = this.returnPolicy;
     data['sublabel'] = this.sublabel;
-    data['pricetype'] = this.pricetype;
-    if (this.pricepackage != null) {
-      data['pricepackage'] = this.pricepackage!.map((v) => v.toJson()).toList();
+    if (this.pricetype != null) {
+      data['pricepackage'] = this.pricetype!.map((v) => v.toJson()).toList();
     }
     data['maincategory_id'] = this.maincategoryId;
     return data;
@@ -225,7 +223,7 @@ class ReviewPoint {
 }
 
 class Pricepackage {
-  String? packagename;
+  String? pricepackagename;
   int? list;
   int? sellprice;
   int? buyprice;
@@ -234,7 +232,7 @@ class Pricepackage {
   String? indate;
 
   Pricepackage(
-      {this.packagename,
+      {this.pricepackagename,
       this.list,
       this.sellprice,
       this.buyprice,
@@ -243,7 +241,7 @@ class Pricepackage {
       this.indate});
 
   Pricepackage.fromJson(Map<String, dynamic> json) {
-    packagename = json['packagename'];
+    pricepackagename = json['pricepackagename'];
     list = json['list'];
     sellprice = json['sellprice'];
     buyprice = json['buyprice'];
@@ -254,7 +252,7 @@ class Pricepackage {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['packagename'] = this.packagename;
+    data['pricepackagename'] = this.pricepackagename;
     data['list'] = this.list;
     data['sellprice'] = this.sellprice;
     data['buyprice'] = this.buyprice;

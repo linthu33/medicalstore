@@ -29,7 +29,6 @@ class ProductService extends ProductServiceApi {
   @override
   Future<int> createProduct(ProductsModel product) async {
     try {
-      print(product);
       var uri = Uri.parse("http://192.168.25.29:3000/createprod");
       //Map data = {'title': product.title, 'color': product.color};
       final response = await http.post(
@@ -39,7 +38,7 @@ class ProductService extends ProductServiceApi {
         },
         body: jsonEncode(product),
       );
-      print(response.statusCode.toString());
+      print('serer response code \t' + response.statusCode.toString());
       return response.statusCode;
     } catch (err) {
       return 0;

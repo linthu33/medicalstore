@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:mystore/admin/bloc/products_bloc.dart';
 import 'package:mystore/admin/models/ProductsModel.dart';
+import 'package:mystore/admin/ui/admin_home.dart';
 
 class WizardFormBloc extends FormBloc<String, String> {
   final title = TextFieldBloc();
@@ -97,7 +98,7 @@ class WizardFormBloc extends FormBloc<String, String> {
     pricetype.addFieldBloc(
       PriceFileFormBloc(
           name: 'pricetype',
-          packagename: TextFieldBloc(name: 'packagename'),
+          pricepackagename: TextFieldBloc(name: 'pricepackagename'),
           sellprice: TextFieldBloc(name: 'sellprice'),
           quantity: TextFieldBloc(name: 'Quantity')),
     );
@@ -136,39 +137,58 @@ class WizardForm extends StatefulWidget {
 
 class _WizardFormState extends State<WizardForm> {
   //late final XFile? _image;
-  File? reimg;
-
+  List<XFile>? reimg;
+  List<String> imgpath = [];
   final ImagePicker _picker = ImagePicker();
-  Future getImagefromcamera() async {
-    var image = await _picker.pickImage(source: ImageSource.camera);
+  getImagefromcamera() async {
+    var image = await _picker.pickMultiImage();
 
     setState(() {
-      reimg = File(image!.path);
+      if (image != null) {
+        reimg = image;
+      }
     });
   }
 
-  Future getImagefromGallery() async {
-    var image = await _picker.pickImage(source: ImageSource.gallery);
+  getImagefromGallery() async {
+    var image = await _picker.pickMultiImage();
 
     setState(() {
-      reimg = File(image!.path);
+      if (image != null) {
+        reimg = image;
+      }
     });
   }
 
-  Future<void> uploadImage(filename) async {
-    print(filename);
-    var request = http.MultipartRequest(
-        'POST', Uri.parse("http://192.168.25.29:3000/uploadImage"));
-    request.files.add(await http.MultipartFile.fromPath('file', filename));
-    //serer သို့ img ကို ပို့ပေးသည်.
-    //var res = await request.send();
-    http.StreamedResponse response = await request.send();
-    var responseBytes = await response.stream.toBytes();
-    var responseString = utf8.decode(responseBytes);
-    print('\n\n');
-    print('RESPONSE WITH HTTP');
-    print(responseString);
-    print('\n\n');
+  Future<void> uploadImage() async {
+    print('uplod laengt ' + reimg!.length.toString());
+    if (reimg!.length > 0) {
+      var request = http.MultipartRequest(
+          'POST', Uri.parse("http://192.168.25.29:3000/uploadImage"));
+
+      for (var i = 0; i < reimg!.length; i++) {
+        //file အောက်ကိူ uplod
+        request.files
+            .add(await http.MultipartFile.fromPath('file', reimg![i].path));
+        //db ထဲသို့ path ထည့်
+        String fileName = reimg![i].path.split('/').last;
+        imgpath.add('uploads/$fileName');
+        //print(imgpath);
+      }
+      //request.files.addAll([
+      //await http.MultipartFile.fromPath('file', filename)]);
+      //serer သို့ img ကို ပို့ပေးသည်.
+      //var res = await request.send();
+      http.StreamedResponse response = await request.send();
+      var responseBytes = await response.stream.toBytes();
+      var responseString = utf8.decode(responseBytes);
+      print('\n\n');
+      print('RESPONSE WITH HTTP');
+      print(responseString);
+      print('\n\n');
+    } else {
+      print('img file is empty , Please try again');
+    }
 
     // The Rest of code
 
@@ -236,6 +256,7 @@ class _WizardFormState extends State<WizardForm> {
                             );
                           }).toList(),
                           title: state.valueOf('title'),
+                          images: imgpath,
                           color: state.valueOf('color'),
                           brand: Brand(name: state.valueOf('brand_name')),
                           experDate: "2/2/2022",
@@ -257,25 +278,25 @@ class _WizardFormState extends State<WizardForm> {
                             return Description(
                                 lang: dec['lang'], details: dec['details']);
                           }).toList(),
-                          pricepackage: state
+                          pricetype: state
                               .valueListOf('pricetype')!
                               .map<Pricepackage>((memberField) {
                             return Pricepackage(
-                              packagename: memberField['packagename'],
-                              list: int.parse(memberField['list']),
+                              pricepackagename: memberField['pricepackagename'],
+                              list: 4, //int.parse(memberField['list']),
                               sellprice: int.parse(memberField['sellprice']),
-                              buyprice: int.parse(memberField['buyprice']),
-                              quantity: int.parse(memberField['Quantity']),
-                              sellquantity:
-                                  int.parse(memberField['sellquantity']),
-                              indate: memberField['indate'],
+                              buyprice:
+                                  55, //int.parse(memberField['buyprice']),
+                              quantity: 5, //int.parse(memberField['Quantity']),
+                              //sellquantity://int.parse(memberField['sellquantity']),
+                              //indate: memberField['indate'],
                             );
                           }).toList());
 
                       context.read<ProductsBloc>()
                         ..add(ProductAdd(product: prod));
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (_) => const SuccessScreen()));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const AdminHome()));
                     }
                   },
                   onFailure: (context, state) {
@@ -357,7 +378,19 @@ class _WizardFormState extends State<WizardForm> {
                 width: MediaQuery.of(context).size.width,
                 height: 200.0,
                 child: Center(
-                    child: reimg == null ? Text("no img") : Image.file(reimg!)),
+                    child: reimg != null
+                        ? Wrap(
+                            children: reimg!.map((imageone) {
+                              return Card(
+                                child: Container(
+                                  height: 100,
+                                  width: 100,
+                                  child: Image.file(File(imageone.path)),
+                                ),
+                              );
+                            }).toList(),
+                          )
+                        : Container()),
               )),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -377,7 +410,7 @@ class _WizardFormState extends State<WizardForm> {
               FloatingActionButton(
                 heroTag: null,
                 onPressed: () async {
-                  await uploadImage(reimg!.path);
+                  await uploadImage();
                 },
                 tooltip: "upload server",
                 child: Icon(Icons.upload),
@@ -725,16 +758,16 @@ class DescriptionCard extends StatelessWidget {
 }
 
 class PriceFileFormBloc extends GroupFieldBloc {
-  final TextFieldBloc packagename;
+  final TextFieldBloc pricepackagename;
   final TextFieldBloc sellprice;
   final TextFieldBloc quantity;
 
   PriceFileFormBloc(
       {String? name,
-      required this.packagename,
+      required this.pricepackagename,
       required this.sellprice,
       required this.quantity})
-      : super(name: name, fieldBlocs: [packagename, sellprice, quantity]);
+      : super(name: name, fieldBlocs: [pricepackagename, sellprice, quantity]);
 }
 
 class PricePackageCard extends StatelessWidget {
@@ -776,7 +809,7 @@ class PricePackageCard extends StatelessWidget {
               ],
             ),
             TextFieldBlocBuilder(
-              textFieldBloc: price_field.packagename,
+              textFieldBloc: price_field.pricepackagename,
               decoration: const InputDecoration(
                 labelText: 'packagetype',
               ),
