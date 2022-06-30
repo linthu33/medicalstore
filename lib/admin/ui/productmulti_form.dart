@@ -202,7 +202,7 @@ class _ProductMultiFormState extends State<ProductMultiForm> {
         var pricedata = pricelist.map((it) => it.pricepackage).toList();
         //prodmodel.description = data.cast<Description>();
         prodmodel.pricetype = pricedata;
-        print(prodmodel.toJson());
+        //print(prodmodel.toJson());
         Navigator.push(
           context,
           MaterialPageRoute(

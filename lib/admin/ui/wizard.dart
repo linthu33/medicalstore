@@ -9,7 +9,7 @@ import 'package:mystore/admin/models/ProductsModel.dart';
 import 'package:mystore/admin/ui/admin_home.dart';
 
 class WizardFormBloc extends FormBloc<String, String> {
-  final title = TextFieldBloc();
+  final title = TextFieldBloc(name: 'title');
   final color = TextFieldBloc(name: 'color');
   final brand_name = TextFieldBloc(name: 'brand_name');
   //final brand_img = TextFieldBloc(name: 'brand_img');
@@ -31,7 +31,7 @@ class WizardFormBloc extends FormBloc<String, String> {
   final subcategorylist =
       ListFieldBloc<MemberFieldBloc, dynamic>(name: 'subcategorylist');
   final uploadimgserer = BooleanFieldBloc();
-  WizardFormBloc() {
+  WizardFormBloc() : super(isLoading: true) {
     addFieldBlocs(
       step: 0,
       fieldBlocs: [
@@ -109,6 +109,20 @@ class WizardFormBloc extends FormBloc<String, String> {
   }
 
   bool _showEmailTakenError = true;
+  var _throwException = true;
+  @override
+  void onLoading() async {
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      subcategorys.updateInitialValue('I am prefilled');
+
+      emitLoaded();
+    } catch (e) {
+      emitLoadFailed();
+    }
+  }
+
   //final prodbloc=
   @override
   void onSubmitting() async {
@@ -137,6 +151,7 @@ class WizardForm extends StatefulWidget {
 
 class _WizardFormState extends State<WizardForm> {
   //late final XFile? _image;
+  String editdata = 'editdata';
   List<XFile>? reimg;
   List<String> imgpath = [];
   final ImagePicker _picker = ImagePicker();

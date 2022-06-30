@@ -22,7 +22,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   void _onAddProduct(ProductAdd event, Emitter<ProductsState> emit) {
     print('-------------------');
-    print(event.product.toJson());
+    //print(event.product.toJson());
     print('-------------------');
     final state = this.state;
     final addproduct = productRepository.AddProducts(event.product);

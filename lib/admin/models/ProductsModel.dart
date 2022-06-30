@@ -31,7 +31,7 @@ class ProductsModel {
       this.sublabel,
       // this.pricetype,
       this.pricetype,
-      this.maincategoryId});
+      this.maincategoryId}); //14 field
 
   ProductsModel.fromJson(Map<String, dynamic> json) {
     maincategory = json['maincategory'];
@@ -71,7 +71,7 @@ class ProductsModel {
     maincategoryId = json['maincategory_id'];
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson(ProductsModel productedit) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['maincategory'] = this.maincategory;
     if (this.subcategory != null) {
