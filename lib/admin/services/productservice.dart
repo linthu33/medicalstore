@@ -16,10 +16,12 @@ class ProductService extends ProductServiceApi {
           await http.get(uri, headers: {"ContentType": "application/json"});
 
       var resultsObjsJson = jsonDecode(response.body)['product'] as List;
+      //print(resultsObjsJson);
       List<ProductsModel> plist = resultsObjsJson
           .map((resultJson) => ProductsModel.fromJson(resultJson))
           .toList();
 
+      //print(plist[0]);
       return plist;
     } catch (err) {
       return List<ProductsModel>.empty();
