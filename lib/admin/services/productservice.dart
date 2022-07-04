@@ -5,6 +5,7 @@ import 'package:mystore/admin/models/ProductsModel.dart';
 abstract class ProductServiceApi {
   Future<List<ProductsModel>> getProduct();
   Future<int> createProduct(ProductsModel product);
+  Future<int> updateProduct(ProductsModel product);
 }
 
 class ProductService extends ProductServiceApi {
@@ -32,6 +33,26 @@ class ProductService extends ProductServiceApi {
   Future<int> createProduct(ProductsModel product) async {
     try {
       var uri = Uri.parse("http://192.168.25.29:3000/createprod");
+      //Map data = {'title': product.title, 'color': product.color};
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(product),
+      );
+      print('serer response code \t' + response.statusCode.toString());
+      return response.statusCode;
+    } catch (err) {
+      return 0;
+    }
+  }
+
+  @override
+  Future<int> updateProduct(ProductsModel product) async {
+    // TODO: implement updateProduct
+    try {
+      var uri = Uri.parse("http://localhost:3000/update");
       //Map data = {'title': product.title, 'color': product.color};
       final response = await http.post(
         uri,

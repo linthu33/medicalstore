@@ -1,4 +1,5 @@
 class ProductsModel {
+  String? Id;
   String? maincategory;
   List<Subcategory>? subcategory;
   String? title;
@@ -16,7 +17,8 @@ class ProductsModel {
   String? maincategoryId;
 
   ProductsModel(
-      {this.maincategory,
+      {this.Id,
+      this.maincategory,
       this.subcategory,
       this.title,
       this.experDate,
@@ -34,6 +36,7 @@ class ProductsModel {
       this.maincategoryId}); //14 field
 
   ProductsModel.fromJson(Map<String, dynamic> json) {
+    Id = json['_id'];
     maincategory = json['maincategory'];
     if (json['subcategory'] != null) {
       subcategory = <Subcategory>[];
@@ -73,6 +76,7 @@ class ProductsModel {
 
   Map<String, dynamic> toJson(ProductsModel productedit) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Id'] = this.Id;
     data['maincategory'] = this.maincategory;
     if (this.subcategory != null) {
       data['subcategory'] = this.subcategory!.map((v) => v.toJson()).toList();

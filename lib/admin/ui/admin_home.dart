@@ -53,6 +53,7 @@ Card _ProductList(ProductsModel product, BuildContext ctx) {
     margin: const EdgeInsets.only(bottom: 8.0),
     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Text(product.color.toString()),
+      Text(product.Id.toString()),
       Row(
         children: [
           IconButton(
@@ -65,7 +66,11 @@ Card _ProductList(ProductsModel product, BuildContext ctx) {
                             )));
               },
               icon: const Icon(Icons.add_task)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.cancel))
+          IconButton(
+              onPressed: () {
+                ctx.read<ProductsBloc>().add(ProductDelete(product: product));
+              },
+              icon: const Icon(Icons.cancel))
         ],
       )
     ]),

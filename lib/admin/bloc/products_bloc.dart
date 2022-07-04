@@ -38,6 +38,27 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     }
   }
 
-  void _onUpdateProduct(ProductUpdate event, Emitter<ProductsState> emit) {}
-  void _onDeleteProduct(ProductDelete event, Emitter<ProductsState> emit) {}
+  void _onUpdateProduct(ProductUpdate event, Emitter<ProductsState> emit) {
+    print(this.state);
+    //print(ProductsModel.toJson());
+    final state = this.state;
+    if (state is ProductsLoadedState) {
+      List<ProductsModel> update = (state.products.map((prod) {
+        return prod.Id == event.product.Id ? event.product : prod;
+      })).toList();
+      emit(ProductsLoadedState(products: update));
+    }
+  }
+
+  void _onDeleteProduct(ProductDelete event, Emitter<ProductsState> emit) {
+    print(this.state);
+    print(event.product);
+    final state = this.state;
+    if (state is ProductsLoadedState) {
+      List<ProductsModel> deleteproduct = state.products.where((product) {
+        return product.Id != event.product.Id;
+      }).toList();
+      emit(ProductsLoadedState(products: deleteproduct));
+    }
+  }
 }

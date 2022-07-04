@@ -308,8 +308,9 @@ class _WizardFormState extends State<WizardForm> {
                             );
                           }).toList());
 
-                      context.read<ProductsBloc>()
-                        ..add(ProductAdd(product: prod));
+                      context
+                          .read<ProductsBloc>()
+                          .add(ProductAdd(product: prod));
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => const AdminHome()));
                     }
